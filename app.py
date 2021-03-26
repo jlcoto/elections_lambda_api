@@ -1,19 +1,16 @@
 from http import HTTPStatus
 
-import boto3
 from flask import Flask, jsonify
 
+from db import DB, TABLE_NAME
 from response_adapter import Adapter
 
-session = boto3.Session(profile_name="jose_default")
 
 adapter = Adapter()
 
 app = Flask(__name__)
 
-TABLE_NAME = "electionResults"
-
-db_client = session.client("dynamodb", region_name="eu-central-1")
+db = DB()
 
 
 @app.route("/")
@@ -28,5 +25,5 @@ def hello_name(name):
 
 @app.route("/get_all_results")
 def get_all_results():
-    results = db_client.scan(TableName=TABLE_NAME)
+    results = db.client.scan(TableName=TABLE_NAME)
     return jsonify(adapter.adapt_party_data(results)), HTTPStatus.OK
