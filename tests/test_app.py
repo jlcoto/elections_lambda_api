@@ -4,7 +4,7 @@ from app import app
 
 
 @pytest.fixture
-def client(mocker):
+def client():
     app.config["PRIVATE_API_KEY"] = "valid-key"
     client = app.test_client()
     with app.app_context():
