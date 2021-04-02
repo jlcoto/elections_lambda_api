@@ -27,3 +27,16 @@ jobs:
     - name: Test with pytest
       run: |
         PYTHONPATH='.' pytest -vv
+    - name: Install serverless
+      run: npm install -g serverless
+    - name: Serverless AWS authentication
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET_KEY }}
+    - name: Install plugins
+      run: sls plugin install -n serverless-python-requirements serverless-wsgi
+    - name: Create env file
+      run: | 
+        cat > env.yml << EOF
+        ${{ secrets.ENV }}
+        EOF
+    - name: Deploy
+      run: sls deploy
